@@ -67,6 +67,7 @@
           </div>
         </div>
       </div>
+      {{ currency[1].floorNum }}
     </v-main>
   </v-app>
 </template>
@@ -84,16 +85,16 @@ export default {
   data() {
     return {
       currency: [
-        "TRY",
-        "USD",
-        "EUR",
-        "GBP",
-        "JPY",
-        "CAD",
-        "AUD",
-        "CHF",
-        "CNY",
-        "RUB",
+        { text: "TRY", floorNum: 29 },
+        { text: "USD", floorNum: 4 },
+        { text: "EUR", floorNum: 1 },
+        { text: "GBP", floorNum: 10 },
+        { text: "JPY", floorNum: 11 },
+        { text: "CAD", floorNum: 8 },
+        { text: "AUD", floorNum: 9 },
+        { text: "CHF", floorNum: 20 },
+        { text: "CNY", floorNum: 13 },
+        { text: "RUB", floorNum: 17 },
       ],
       accountNumberData: [
         {
@@ -152,10 +153,23 @@ export default {
         desc: this.positions.desc,
       };
       this.positions = [...this.positions, payload];
-      this.totalAmount += Number(this.positions[i].amount);
+      const selectedCurrencyText = this.positions[i].currency.text;
+      this.currency.forEach((x) => {
+        if (x.text == selectedCurrencyText) {
+          this.totalAmount += this.positions[i].amount * x.floorNum;
+          console.log(this.totalAmount);
+        }
+      });
+      // this.totalAmount = Number(this.positions[i].amount);
     },
     deleteHandle(index) {
-      this.totalAmount -= Number(this.positions[index].amount);
+      const selectedCurrencyText = this.positions[index].currency.text;
+      this.currency.forEach((x) => {
+        if (x.text == selectedCurrencyText) {
+          this.totalAmount -= this.positions[index].amount * x.floorNum;
+          console.log(this.totalAmount);
+        }
+      });
       this.positions.splice(index, 1);
     },
   },
