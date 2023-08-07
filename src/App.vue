@@ -6,7 +6,7 @@
       dark
       class="flex justify-center mx-12 text-2xl"
     >
-      TOTAL AMOUNT: {{ totalAmount }}
+      TOTAL AMOUNT: {{ totalAmount.toFixed(2) }}€
     </v-app-bar>
 
     <v-main>
@@ -67,8 +67,8 @@
           </div>
         </div>
       </div>
-      {{ currency[1].floorNum }}
     </v-main>
+    {{ currency }}
   </v-app>
 </template>
 
@@ -84,18 +84,7 @@ export default {
 
   data() {
     return {
-      currency: [
-        { text: "TRY", floorNum: 29 },
-        { text: "USD", floorNum: 4 },
-        { text: "EUR", floorNum: 1 },
-        { text: "GBP", floorNum: 10 },
-        { text: "JPY", floorNum: 11 },
-        { text: "CAD", floorNum: 8 },
-        { text: "AUD", floorNum: 9 },
-        { text: "CHF", floorNum: 20 },
-        { text: "CNY", floorNum: 13 },
-        { text: "RUB", floorNum: 17 },
-      ],
+      currency: [],
       accountNumberData: [
         {
           _id: "1",
@@ -156,7 +145,7 @@ export default {
       const selectedCurrencyText = this.positions[i].currency.text;
       this.currency.forEach((x) => {
         if (x.text == selectedCurrencyText) {
-          this.totalAmount += this.positions[i].amount * x.floorNum;
+          this.totalAmount += this.positions[i].amount / x.floorNum;
           console.log(this.totalAmount);
         }
       });
@@ -166,13 +155,22 @@ export default {
       const selectedCurrencyText = this.positions[index].currency.text;
       this.currency.forEach((x) => {
         if (x.text == selectedCurrencyText) {
-          this.totalAmount -= this.positions[index].amount * x.floorNum;
+          this.totalAmount -= this.positions[index].amount / x.floorNum;
           console.log(this.totalAmount);
         }
       });
       this.positions.splice(index, 1);
     },
+
+    async fetchCurrency() {
+      const response = await fetch('http://localhost:3000/currency')
+      const currencyData = await response.json()
+      this.currency = [...currencyData]
+    }
   },
+  mounted () {
+    this.fetchCurrency()
+  }
 };
 </script>
 
