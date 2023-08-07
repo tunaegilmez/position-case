@@ -6,7 +6,7 @@
       dark
       class="flex justify-center mx-12 text-2xl"
     >
-      TOTAL AMOUNT: {{ positions.amount }}
+      TOTAL AMOUNT: {{ totalAmount }}
     </v-app-bar>
 
     <v-main>
@@ -52,12 +52,14 @@
             </v-text-field>
           </div>
           <div class="border-l-2 pl-3 h-14">
-            <v-icon class="icon cursor-pointer" color="#4A90E2"
+            <v-icon
+              class="icon cursor-pointer"
+              color="#4A90E2"
               @click="deleteHandle(i)"
               >mdi-delete</v-icon
             >
             <v-icon
-              @click="saveHandle"
+              @click="saveHandle(i)"
               class="icon cursor-pointer"
               color="#4A90E2"
               >mdi-content-save</v-icon
@@ -124,7 +126,7 @@ export default {
       positions: [
         {
           currency: null,
-          amount: null,
+          amount: 0,
           accountNumber: null,
           paymentMethod: null,
           desc: null,
@@ -138,10 +140,10 @@ export default {
       return this.accountNumberData.map(
         (item) => `${item.account_number} - ${item.caption}`
       );
-    },  
+    },
   },
   methods: {
-    saveHandle() {
+    saveHandle(i) {
       const payload = {
         currency: this.positions.currency,
         amount: this.positions.amount,
@@ -150,11 +152,12 @@ export default {
         desc: this.positions.desc,
       };
       this.positions = [...this.positions, payload];
+      this.totalAmount += Number(this.positions[i].amount);
     },
     deleteHandle(index) {
-      console.log(index);
-      this.positions.splice(index, 1)
-    }
+      this.totalAmount -= Number(this.positions[index].amount);
+      this.positions.splice(index, 1);
+    },
   },
 };
 </script>
