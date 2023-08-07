@@ -5,7 +5,6 @@
       :label="label"
       :items="data"
       v-model="currentItem"
-      :item-text="textProp"
     >
     </v-combobox>
   </div>
